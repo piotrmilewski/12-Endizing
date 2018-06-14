@@ -1,4 +1,4 @@
-frames 361
+frames 150
 basename porsche
 push
 move 250 250 0
@@ -6,4 +6,4 @@ scale 110 110 110
 rotate y 360 yeet
 mesh Porsche_911_GT2.obj
 pop
-vary yeet 0 360 0 1
+vary yeet 0 149 0 1
