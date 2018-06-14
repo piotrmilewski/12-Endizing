@@ -392,11 +392,11 @@ LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
   lastop++;
 }|
 
-MESH CO STRING
+MESH STRING
 {
   lineno++;
   op[lastop].opcode = MESH;
-  strcpy(op[lastop].op.mesh.name,$3);
+  strcpy(op[lastop].op.mesh.name,$2);
   op[lastop].op.mesh.constants = NULL;
   op[lastop].op.mesh.cs = NULL;
   lastop++;

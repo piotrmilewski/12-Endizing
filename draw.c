@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <unistd.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -8,6 +9,98 @@
 #include "matrix.h"
 #include "math.h"
 #include "gmath.h"
+
+int part( const char *str, char ***coll){ //call part(line, &args)
+  int i1, i2, length;
+  i1 = 0;
+  i2 = 1;
+  length = 1;
+  char *a;
+  char *c;
+
+  a = (char*)str;
+  while (*a != '\0'){
+    if (*a == ' ')
+      i2++;
+    a++;
+  }
+
+  *coll = (char**)malloc(sizeof(char*) * i2);
+  if (*coll == NULL)
+    exit(1);
+  a = (char*)str;
+  
+  while (*a != '\0') {
+    if (*a == ' ') {
+      (*coll)[i1] = (char*)malloc(sizeof(char) * length);
+      if ((*coll)[i1] == NULL)
+	exit(1);
+      length = 0;
+      i1++;
+    }
+    a++;
+    length++;
+  }
+
+  (*coll)[i1] = (char*)malloc(sizeof(char) * length);
+  if ((*coll)[i1] == NULL)
+    exit(1);
+  i1 = 0;
+  a = (char *)str;
+  c = ((*coll)[i1]);
+
+  while (*a != '\0') {
+    if (*a != ' ' && *a != '\0') {
+      *c = *a;
+      c++;
+    }
+    else {
+      *c = '\0';
+      i1++;
+      c = ((*coll)[i1]);
+    }
+    a++;
+  }
+  return i2;
+}
+
+void add_mesh( struct matrix *points, char *name) {
+  FILE *mesh_file = fopen(name, "r");
+  struct matrix *v = new_matrix(4,100);
+  int i, size, v0, v1, v2;
+  char **args;
+  double x, y, z;
+  char line[256];
+
+  add_point(v, 0, 0, 0);
+  while( fgets( line, sizeof(line), mesh_file) != NULL) {
+    line[strlen(line) - 1] = '\0';
+    if (line[0] == 'f') { //polygon
+      size = part(line, &args);
+      v0 = atoi(args[1]);
+      for (i = 2; i < size - 1; i++){
+	v1 = atoi(args[i]);
+	v2 = atoi(args[i+1]);
+	add_polygon(points, v->m[0][v0], v->m[1][v0], v->m[2][v0], v->m[0][v1], v->m[1][v1], v->m[2][v1], v->m[0][v2], v->m[1][v2], v->m[2][v2]);
+      }
+    }
+    if (line[0] == 'v' && line[1] == ' ') { //veeeeeerrrrrttex
+      sscanf(line, "v %lf %lf %lf", &x, &y, &z);
+      add_point(v, x, y, z);
+    }
+  }
+  fclose(mesh_file);
+  free_matrix(v);
+}
+
+void print_args(char ** args, int len){
+  int i;
+  printf("%d : [", len);
+  for(i=0; i < len; i++){
+    printf("%s ", args[i]);
+  }
+  printf("]\n");
+}
 
 /*======== void scanline_convert() ==========
   Inputs: struct matrix *points

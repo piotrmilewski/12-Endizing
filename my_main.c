@@ -220,9 +220,9 @@ void my_main() {
   light[LOCATION][1] = 0.75;
   light[LOCATION][2] = 1;
 
-  light[COLOR][RED] = 0;
-  light[COLOR][GREEN] = 255;
-  light[COLOR][BLUE] = 255;
+  light[COLOR][RED] = 255;
+  light[COLOR][GREEN] = 50;
+  light[COLOR][BLUE] = 50;
 
   view[0] = 0;
   view[1] = 0;
@@ -236,9 +236,9 @@ void my_main() {
   dreflect[GREEN] = 0.5;
   dreflect[BLUE] = 0.5;
 
-  sreflect[RED] = 0.5;
-  sreflect[GREEN] = 0.5;
-  sreflect[BLUE] = 0.5;
+  sreflect[RED] = 0.7;
+  sreflect[GREEN] = 0.7;
+  sreflect[BLUE] = 0.7;
 
   systems = new_stack();
   tmp = new_matrix(4, 1000);
@@ -262,6 +262,12 @@ void my_main() {
       //printf("%d: ",i);
       switch (op[i].opcode)
 	{
+	case MESH:
+	  add_mesh(tmp, op[i].op.mesh.name);
+	  matrix_mult(peek(systems), tmp);
+	  draw_polygons(tmp, t, zb, view, light, ambient, areflect, dreflect, sreflect);
+	  tmp->lastcol = 0;
+	  break;
 	case SPHERE:
 	  /* printf("Sphere: %6.2f %6.2f %6.2f r=%6.2f", */
 	  /* 	 op[i].op.sphere.d[0],op[i].op.sphere.d[1], */

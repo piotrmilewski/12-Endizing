@@ -7,7 +7,7 @@ runo: all
 	./mdl scripto.mdl
 
 run: all
-	./mdl simple_anim.mdl
+	./mdl porsche.mdl
 
 all: parser
 
